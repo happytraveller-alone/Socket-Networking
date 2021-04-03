@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/Socket-Networking.iml" filepath="$PROJECT_DIR$/Socket-Networking.iml" />
+      <module fileurl="file://$PROJECT_DIR$/SocketchatGithub2/SocketchatGithub2.iml" filepath="$PROJECT_DIR$/SocketchatGithub2/SocketchatGithub2.iml" />
+      <module fileurl="file://$PROJECT_DIR$/TCPConnection1/TCPConnection1.iml" filepath="$PROJECT_DIR$/TCPConnection1/TCPConnection1.iml" />
+      <module fileurl="file://$PROJECT_DIR$/TCPConnection2/TCPConnection2.iml" filepath="$PROJECT_DIR$/TCPConnection2/TCPConnection2.iml" />
+      <module fileurl="file://$PROJECT_DIR$/TCPConnection4/TCPConnection4.iml" filepath="$PROJECT_DIR$/TCPConnection4/TCPConnection4.iml" />
+      <module fileurl="file://$PROJECT_DIR$/TcpConnection3/TcpConnection3.iml" filepath="$PROJECT_DIR$/TcpConnection3/TcpConnection3.iml" />
+      <module fileurl="file://$PROJECT_DIR$/UDPConnection/UDPConnection.iml" filepath="$PROJECT_DIR$/UDPConnection/UDPConnection.iml" />
+      <module fileurl="file://$PROJECT_DIR$/WeiXinChat/WeiXinChat.iml" filepath="$PROJECT_DIR$/WeiXinChat/WeiXinChat.iml" />
+      <module fileurl="file://$PROJECT_DIR$/test/test.iml" filepath="$PROJECT_DIR$/test/test.iml" />
+    </modules>
+  </component>
+</project>
