@@ -48,7 +48,7 @@ public class TcpThreadServer {
     @Override
     public void run() {
       //本地服务器控制台显示客户端连接的用户信息
-      System.out.println("New connection accept:" + socket.getInetAddress().getHostAddress());
+      System.out.println("New connection accept:" + socket.getInetAddress());//.getHostAddress()
       try {
         BufferedReader br = getReader(socket);
         PrintWriter pw = getWriter(socket);
