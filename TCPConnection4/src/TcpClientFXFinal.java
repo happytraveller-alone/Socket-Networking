@@ -14,8 +14,10 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
+import java.io.File;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.concurrent.atomic.AtomicReference;
@@ -26,32 +28,42 @@ import java.util.concurrent.atomic.AtomicReference;
  * @author : 12345 All right reserved.
  */
 public class TcpClientFXFinal extends Application {
-  private final Button ButtonExit = new Button("退出");
-  private final Button ButtonSend = new Button("发送");
-  private final Button ButtonConnect = new Button("连接");
-  private final Button ButtonRegister = new Button("注册");
-  private final String ExitWord = "bye";
-  private final String Port = "12345";
-  private TcpClient tcpClient;
-  private Thread readThread;
-  private String receiveMsg;
+    private final Button ButtonExit = new Button("退出");
+    private final Button ButtonSend = new Button("发送");
+    private final Button ButtonConnect = new Button("连接");
+    private final Button ButtonRegister = new Button("注册");
+    private final Button ButtonChose = new Button("文件");
+    private final String ExitWord = "bye";
+    private final String Port = "12345";
+    /**
+     * 输入信息区域
+     */
+    private final TextField TextFieldSend = new TextField();
+    /**
+     * 显示区域
+     */
+    private final TextArea TextAreaDisplay = new TextArea();
+    /**
+     * 填写ip地址
+     */
+    private final TextField ipAddress = new TextField();
+    private TcpClient tcpClient;
+    private Thread readThread;
+    private String receiveMsg;
+    /**
+     * 填写端口
+     */
+    private final TextField TextFieldPort = new TextField();
+    /**
+     * 填写端口
+     */
+    private final TextField TextFieldName = new TextField();
 
-  /** 输入信息区域 */
-  private final TextField TextFieldSend = new TextField();
-  /** 显示区域 */
-  private final TextArea TextAreaDisplay = new TextArea();
-  /** 填写ip地址 */
-  private final TextField ipAddress = new TextField();
-  /**填写端口*/
-  private final TextField TextFieldPort = new TextField();
-  /**填写端口*/
-  private final TextField TextFieldName = new TextField();
 
-
-  /**
-   * 主函数调用
-   */
-  public static void main(String[] args) {
+    /**
+     * 主函数调用
+     */
+    public static void main(String[] args) {
     launch(args);
   }
 
@@ -80,15 +92,15 @@ public class TcpClientFXFinal extends Application {
       hBox1.setAlignment(Pos.CENTER);
       //添加控件，包括IP地址文字，输入框，端口文字，输入框，连接按钮
       hBox1.getChildren()
-            .addAll(new Label("ip地址："),
-                    ipAddress,
-                    new Label("端口："),
-                    TextFieldPort,
-                    ButtonConnect,
-                    new Label("昵称："),
-                    TextFieldName,
-                    ButtonRegister
-                    );
+              .addAll(new Label("ip地址："),
+                      ipAddress,
+                      new Label("端口："),
+                      TextFieldPort,
+                      ButtonConnect,
+                      new Label("昵称："),
+                      TextFieldName,
+                      ButtonRegister
+              );
       //自动获取客户端主机的IP地址，并进行文本框内容填充
       InetAddress address;
       String ip = null;
@@ -115,11 +127,11 @@ public class TcpClientFXFinal extends Application {
       vBox.setPadding(new javafx.geometry.Insets(10, 20, 10, 20));
       //示例内部添加控件，包括信息显示区文字，信息显示文本框，信息输入区文字，信息输入文本框
       vBox.getChildren()
-            .addAll(
-                    new javafx.scene.control.Label("信息显示区"),
-                    TextAreaDisplay,
-                    new Label("信息输入区"),
-                    TextFieldSend);
+              .addAll(
+                      new javafx.scene.control.Label("信息显示区"),
+                      TextAreaDisplay,
+                      new Label("信息输入区"),
+                      TextFieldSend);
       //信息显示区控件设置为在调整父VBox的高度时垂直增长
       VBox.setVgrow(TextAreaDisplay, Priority.ALWAYS);
       //设置信息显示区文本框为不可编辑
@@ -136,12 +148,31 @@ public class TcpClientFXFinal extends Application {
       //实例居右显示
       hBox.setAlignment(Pos.CENTER_LEFT);
       //添加发送按钮和退出按钮两个控件
-      Text text = new Text("输入命令功能：(1)L:查看当前上线用户;(2)G:进入群聊;" +
+      Text text = new Text("(1)L:查看当前上线用户;(2)G:进入群聊;" +
               "(3)P:私信;(4)E:退出当前聊天状态;(5)bye:离线;");
       text.setFill(Color.INDIANRED);
       text.setFont(new Font(15));
       hBox.getChildren().
-              addAll(text,ButtonSend, ButtonExit);
+              addAll(text, ButtonChose, ButtonSend, ButtonExit);
+
+      ButtonRegister.setDisable(true);
+      ButtonSend.setDisable(true);
+      ButtonChose.setDisable(true);
+
+      //进行文件选择事件
+      ButtonChose.setOnAction(event -> {
+          FileChooser fileChooser = new FileChooser();
+          FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("TXT files (*.txt)", "*.txt");
+          fileChooser.getExtensionFilters().add(extFilter);
+          File file = fileChooser.showOpenDialog(primaryStage);
+          String str1 = file.getName();
+          String str2 = String.valueOf(file.length());
+          tcpClient.send(str1 + str2);
+          TextAreaDisplay.appendText("客户端选择文件：" + str1 + "\t" + str2 + "\n");
+          TextAreaDisplay.appendText("是否确认进行文件发送？Y/N\n");
+          String temp = TextFieldSend.getText();
+
+      });
 
       //连接按钮事件
       ButtonConnect.setOnAction(event -> {
@@ -152,49 +183,51 @@ public class TcpClientFXFinal extends Application {
               // 用于接收服务器信息的单独线程
               readThread = new Thread(() -> {
                   while ((receiveMsg = tcpClient.receive()) != null) {
-                      Platform.runLater(() -> TextAreaDisplay.appendText(receiveMsg + "\n"));
+                      String finalReceiveMsg = receiveMsg;
+                      Platform.runLater(() -> TextAreaDisplay.appendText(finalReceiveMsg + "\n"));
                   }
                   Platform.runLater(() -> TextAreaDisplay.appendText("对话已关闭！\n"));
               });
-
               readThread.start();
               // 连接服务器之后未结束服务前禁用再次连接
               ButtonConnect.setDisable(true);
               // 重新连接服务器时启用输入发送功能
               TextFieldSend.setDisable(false);
-              ButtonSend.setDisable(false);
-            } catch (Exception e) {
+
+              ButtonRegister.setDisable(false);
+          } catch (Exception e) {
               TextAreaDisplay.appendText("服务器连接失败！" + e.getMessage() + "\n");
           }
       });
 
-
-      //连接按钮事件
+      //注册按钮事件
       ButtonRegister.setOnAction(event -> {
           String msg = TextFieldName.getText().trim();
-          while (msg.length() <= 4){
-              TextAreaDisplay.appendText("昵称名称过短\n请您重新输入\n");
-              TextFieldSend.clear();
-              msg = TextFieldName.getText().trim();
+          try {
+              tcpClient.send(msg); // 向服务器发送一串字符
+          } catch (Exception e) {
+              TextAreaDisplay.appendText("注册失败！" + e.getMessage() + "\n");
           }
-          tcpClient.send(msg); // 向服务器发送一串字符
-          TextAreaDisplay.appendText("您的昵称是：" + msg + "\n");
+          ButtonChose.setDisable(false);
+          ButtonSend.setDisable(false);
       });
 
       //发送按钮事件
       ButtonSend.setOnAction(event -> {
-            String msg = TextFieldSend.getText();
-            tcpClient.send(msg); // 向服务器发送一串字符
-            TextAreaDisplay.appendText("客户端发送：" + msg + "\n");
-            if (ExitWord.equalsIgnoreCase(msg)) {
-                // 发送bye后禁用发送按钮
-                ButtonSend.setDisable(true);
-                // 禁用Enter发送信息输入区域
-                TextFieldSend.setDisable(true);
-                // 结束服务后再次启用连接按钮
-                ButtonConnect.setDisable(false);
-            }
-            TextFieldSend.clear();
+          String msg = TextFieldSend.getText();
+          tcpClient.send(msg); // 向服务器发送一串字符
+          TextAreaDisplay.appendText("客户端发送：" + msg + "\n");
+          if (ExitWord.equalsIgnoreCase(msg)) {
+              // 发送bye后禁用发送按钮
+              ButtonSend.setDisable(true);
+              ButtonRegister.setDisable(true);
+              ButtonChose.setDisable(true);
+              // 禁用Enter发送信息输入区域
+              TextFieldSend.setDisable(true);
+              // 结束服务后再次启用连接按钮
+              ButtonConnect.setDisable(false);
+          }
+          TextFieldSend.clear();
       });
 
       // 对输入区域绑定键盘事件

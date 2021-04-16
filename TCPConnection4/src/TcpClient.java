@@ -2,11 +2,13 @@ import java.io.*;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 
-/** @author 123456 */
+/**
+ * @author 123456
+ */
 public class TcpClient {
+  private final PrintWriter pw;
+  private final BufferedReader br;
   private Socket socket;
-  private PrintWriter pw;
-  private BufferedReader br;
 
   public TcpClient(String ip, String port) throws IOException {
     // 主动向服务器发起连接，实现TCP三次握手，不成功则抛出错误，由调用者处理错误

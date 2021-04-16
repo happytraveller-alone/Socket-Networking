@@ -13,6 +13,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
@@ -93,14 +94,12 @@ public class TcpClientThreadFx extends Application {
                 readThread = new Thread(()->{
                     String receiveMsg;//从服务器接收一串字符
                     while ((receiveMsg=tcpClient.receive())!=null){
-                        //lambda表达式不能直接访问外部非final类型局部变量，需要定义一个临时变量
-                        //若将receiveMsg定义为类成员变量，则无需临时变量
+                        //lambda表达式不能直接访问外部非final类型局部变量，需要定义一个临时变量, 若将receiveMsg定义为类成员变量，则无需临时变量
                         String msgTemp = receiveMsg;
                         Platform.runLater(()-> TextAreaDisplay.appendText(msgTemp+"\n"));
                     }
                     Platform.runLater(()-> TextAreaDisplay.appendText("对话已关闭！\n"));
                 });
-
                 readThread.start();
                 //连接服务器之后未结束服务前禁用再次连接
                 ButtonConnect.setDisable(true);

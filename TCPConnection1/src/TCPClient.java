@@ -8,7 +8,6 @@ import java.nio.charset.StandardCharsets;
  */
 public class TCPClient {
     private final Socket socket;
-
     private final PrintWriter pw;
     private final BufferedReader br;
 

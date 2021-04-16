@@ -1,6 +1,8 @@
 //TCPServer.java
+
 import java.io.*;
-import java.net.*;
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 
 /**
@@ -37,30 +39,28 @@ public class TCPServer {
     //单客户版本，每次只能与一个用户建立通信连接
     public void Service(){
         while (true){
-            Socket socket=null;
+            Socket socket = null;
             try {
                 //此处程序阻塞，监听并等待用户发起连接，有连接请求就生成一个套接字
-                socket=serverSocket.accept();
-
+                socket = serverSocket.accept();
                 //本地服务器控制台显示客户连接的用户信息
-                System.out.println("New connection accepted:"+socket.getInetAddress());
-                /*字符串输入流*/
-                BufferedReader br=getReader(socket);
-                /*字符串输出流*/
-                PrintWriter pw=getWriter(socket);
+                System.out.println("New connection accepted:" + socket.getInetAddress());
+                PrintWriter pw = getWriter(socket);
                 pw.println("来自服务器消息：欢迎使用本服务！");
-
-
+                /*字符串输入流*/
+                BufferedReader br = getReader(socket);
+                /*字符串输出流*/
                 String msg;
                 //此处程序阻塞，每次从输入流中读入一行字符串
-                while ((msg=br.readLine())!=null){
+                while ((msg = br.readLine()) != null) {
                     //如果用户发送信息为”bye“，就结束通信
-                    if("bye".equals(msg)){
+                    if ("bye".equals(msg)) {
                         pw.println("来自服务器消息：服务器断开连接，结束服务！");
                         System.out.println("客户端离开。");
                         break;
                     }
-                    pw.println("来自服务器消息："+msg);
+                    pw.println("来自服务器消息：" + msg);
+                    pw.println("来自服务器重复消息：" + msg);
                 }
             }catch (IOException e){
                 e.printStackTrace();

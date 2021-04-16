@@ -2,13 +2,17 @@ import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+
 import java.io.IOException;
 
 /**
@@ -94,7 +98,6 @@ public class TCPClientFX extends Application {
             TCPClient.send(msg);//向服务器发送一串字符
             taDisplay.appendText("客户端发送："+msg+"\n");
 
-            String rmsg;
             String Rmsg = TCPClient.receive();
             //System.out.println(Rmsg);
             taDisplay.appendText(Rmsg+"\n");
@@ -129,14 +132,9 @@ public class TCPClientFX extends Application {
             }
         });
 
-        btnExit.setOnAction(event -> {
-            exit();
-
-        });
+        btnExit.setOnAction(event -> exit());
         //窗体关闭响应的事件,点击右上角的×关闭,客户端也关闭
-        primaryStage.setOnCloseRequest(event -> {
-            exit();
-        });
+        primaryStage.setOnCloseRequest(event -> exit());
 
 
         //信息显示区鼠标拖动高亮文字直接复制到信息输入框，方便选择文件名
@@ -152,12 +150,11 @@ public class TCPClientFX extends Application {
     private void exit() {
         if (TCPClient !=null){
             //向服务器发送关闭连接的约定信息
-            TCPClient.send("!Exit");
+            TCPClient.send("bye");
             TCPClient.close();
         }
         System.exit(0);
     }
-
 
     public static void main (String[] args) {
         launch(args);

@@ -1,5 +1,6 @@
 import java.io.*;
-import java.net.*;
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 
 /**
@@ -48,15 +49,16 @@ public class TcpServer {
 
                 String msg;
                 /*此处程序阻塞，每次从输入流中读入一行字符串*/
-                while ((msg=br.readLine())!=null){
+                while ((msg = br.readLine()) != null) {
                     //如果用户发送信息为”bye“，就结束通信
                     String exitWord = "bye";
-                    if(msg.equals(exitWord)){
+                    if (msg.equals(exitWord)) {
                         pw.println("来自服务器消息：服务器断开连接，结束服务！");
                         System.out.println("客户端离开。");
                         break;
                     }
-                    pw.println("来自服务器消息："+msg);
+                    pw.println("来自服务器消息：" + msg);
+                    pw.println("来自服务器重复消息：" + msg);
                 }
             }catch (IOException e){
                 e.printStackTrace();
